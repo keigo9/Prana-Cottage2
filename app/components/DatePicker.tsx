@@ -33,8 +33,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   // 2日以降から選択可能
   const selectAbleStartDate = addDays(today, 2);
-  // 150日まで選択可能
-  const maxDate = addDays(today, 150);
+  // 180日まで選択可能
+  const maxDate = addDays(today, 180);
 
   const handleResetClick = () => setRange(undefined);
   const [month, setMonth] = useState<Date>(today);
