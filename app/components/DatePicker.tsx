@@ -7,16 +7,24 @@ import {addDays, differenceInCalendarDays, format, isSameMonth} from 'date-fns';
 import 'react-day-picker/dist/style.css';
 import {ja} from 'date-fns/locale';
 
+export type Event = {
+  id: string;
+  start: string;
+  end: string;
+};
+
 interface DatePickerProps {
   range: DateRange | undefined;
   setRange: Dispatch<SetStateAction<DateRange | undefined>>;
   setIsSelectedDays: Dispatch<SetStateAction<boolean>>;
+  events: Event[];
 }
 
 export const DatePicker: React.FC<DatePickerProps> = ({
   range,
   setRange,
   setIsSelectedDays,
+  events,
 }) => {
   const locale = ja;
   const today = new Date();
@@ -105,11 +113,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     );
   }
 
-  const disabledDays = [
-    new Date(2022, 5, 10),
-    new Date(2022, 5, 12),
-    new Date(2022, 5, 20),
-  ];
+  const disabledDays = (events || []).map((event) => {
+    const range = {
+      from: event.start ? new Date(event.start) : undefined,
+      to: event.end ? new Date(event.end) : undefined,
+    } as DateRange;
+    return range;
+  });
 
   let footer = <p>日付を選択してください</p>;
   if (range?.from) {

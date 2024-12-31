@@ -11,13 +11,16 @@ import {useState} from 'react';
 import type {DateRange} from 'react-day-picker';
 import {DatePicker} from './DatePicker';
 import {format} from 'date-fns';
+import type {Event} from './DatePicker';
 
 export function ProductForm({
   productOptions,
   selectedVariant,
+  events,
 }: {
   productOptions: MappedProductOptions[];
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
+  events: Event[];
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
@@ -115,6 +118,7 @@ export function ProductForm({
         range={range}
         setRange={setRange}
         setIsSelectedDays={setIsSelectedDays}
+        events={events}
       />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}

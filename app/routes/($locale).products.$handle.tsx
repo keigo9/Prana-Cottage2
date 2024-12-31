@@ -11,6 +11,7 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import type {Event} from '~/components/DatePicker';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -48,11 +49,14 @@ async function loadCriticalData({
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
+  const apiUrl = context.env.API_URL || 'http://localhost:4000';
+
+  const [{product}, events] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Add other queries here, so that they are loaded in parallel
+    fetch(`${apiUrl}/api/calendar/events`).then((res) => res.json()),
   ]);
 
   if (!product?.id) {
@@ -61,6 +65,7 @@ async function loadCriticalData({
 
   return {
     product,
+    events,
   };
 }
 
@@ -77,7 +82,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, events} = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -110,6 +115,7 @@ export default function Product() {
         <ProductForm
           productOptions={productOptions}
           selectedVariant={selectedVariant}
+          events={events as Event[]}
         />
         <br />
         <br />
