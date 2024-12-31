@@ -7,6 +7,10 @@ import type {
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
+import {useState} from 'react';
+import type {DateRange} from 'react-day-picker';
+import {DatePicker} from './DatePicker';
+import {format} from 'date-fns';
 
 export function ProductForm({
   productOptions,
@@ -17,9 +21,15 @@ export function ProductForm({
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const [range, setRange] = useState<DateRange | undefined>();
+  const [isSelectedDays, setIsSelectedDays] = useState(false);
+  // name = "Duration"のoptionを除外
+  const filteredProductOptions = productOptions.filter(
+    (option) => option.name !== 'Duration',
+  );
   return (
     <div className="product-form">
-      {productOptions.map((option) => {
+      {filteredProductOptions.map((option) => {
         // If there is only a single value in the option values, don't display the option
         if (option.optionValues.length === 1) return null;
 
@@ -101,6 +111,11 @@ export function ProductForm({
           </div>
         );
       })}
+      <DatePicker
+        range={range}
+        setRange={setRange}
+        setIsSelectedDays={setIsSelectedDays}
+      />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -109,14 +124,30 @@ export function ProductForm({
         lines={
           selectedVariant
             ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                  selectedVariant,
-                },
+                range?.from && range?.to
+                  ? {
+                      merchandiseId: selectedVariant.id,
+                      quantity: 1,
+                      attributes: [
+                        {
+                          key: 'チェックイン',
+                          value: format(range.from, 'yyyy/MM/dd'),
+                        },
+                        {
+                          key: 'チェックアウト',
+                          value: format(range.to, 'yyyy/MM/dd'),
+                        },
+                      ],
+                    }
+                  : {
+                      merchandiseId: selectedVariant.id,
+                      quantity: 1,
+                      selectedVariant,
+                    },
               ]
             : []
         }
+        isSelectedDays={isSelectedDays}
       >
         {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
       </AddToCartButton>

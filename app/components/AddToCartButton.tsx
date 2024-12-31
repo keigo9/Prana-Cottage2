@@ -7,12 +7,14 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  isSelectedDays,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
   onClick?: () => void;
+  isSelectedDays: boolean;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
@@ -26,7 +28,7 @@ export function AddToCartButton({
           <button
             type="submit"
             onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
+            disabled={(!isSelectedDays || disabled) ?? fetcher.state !== 'idle'}
           >
             {children}
           </button>

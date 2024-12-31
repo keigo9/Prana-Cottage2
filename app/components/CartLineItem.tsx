@@ -20,7 +20,7 @@ export function CartLineItem({
   layout: CartLayout;
   line: CartLine;
 }) {
-  const {id, merchandise} = line;
+  const {id, merchandise, attributes} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
@@ -61,6 +61,13 @@ export function CartLineItem({
               </small>
             </li>
           ))}
+          {attributes.map((attribute) => (
+            <li key={attribute.key}>
+              <small>
+                {attribute.key}: {attribute.value}
+              </small>
+            </li>
+          ))}
         </ul>
         <CartLineQuantity line={line} />
       </div>
@@ -82,7 +89,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
   return (
     <div className="cart-line-quantity">
       <small>Quantity: {quantity} &nbsp;&nbsp;</small>
-      <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
+      {/* <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
           aria-label="Decrease quantity"
           disabled={quantity <= 1 || !!isOptimistic}
@@ -103,7 +110,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
           <span>&#43;</span>
         </button>
       </CartLineUpdateButton>
-      &nbsp;
+      &nbsp; */}
       <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
     </div>
   );
