@@ -12,6 +12,23 @@ export default async function handleRequest(
   context: AppLoadContext,
 ) {
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
+    defaultSrc: ["'self'", 'https://cdn.shopify.com', 'https://shopify.com'],
+    imgSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://*.cdninstagram.com',
+      'data:',
+      'https://shopify.com',
+    ],
+    mediaSrc: ["'self'", 'https://*.cdninstagram.com'],
+    styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.shopify.com'],
+    connectSrc: ["'self'", 'https://cdn.shopify.com', 'https://shopify.com'],
+    scriptSrc: [
+      "'self'",
+      "'unsafe-inline'",
+      "'unsafe-eval'",
+      'https://cdn.shopify.com',
+    ],
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,

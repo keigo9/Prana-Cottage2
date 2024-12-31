@@ -9,6 +9,7 @@ export type InstagramPost = {
   comments_count: number;
   like_count: number;
   media_type: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
+  thumbnail_url?: string;
 };
 
 // キャッシュの型定義
