@@ -165,13 +165,35 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     setSearchParams,
   ]);
 
+  const handleRangeSelect = (range: DateRange | undefined) => {
+    if (!range) {
+      setRange(range);
+      return;
+    }
+
+    // 選択範囲が無効な日付と重なっているかチェック
+    const isRangeDisabled = disabledDays.some((disabled) => {
+      const disabledStart = disabled.from ? new Date(disabled.from) : null;
+      const disabledEnd = disabled.to ? new Date(disabled.to) : null;
+
+      if (!disabledStart || !disabledEnd || !range.from || !range.to)
+        return false;
+
+      return !(range.to < disabledStart || range.from > disabledEnd);
+    });
+
+    if (!isRangeDisabled) {
+      setRange(range);
+    }
+  };
+
   return (
     <DayPicker
       id="bookingDatePicker"
       className="!ml-0"
       mode="range"
       selected={range}
-      onSelect={setRange}
+      onSelect={handleRangeSelect}
       max={8}
       toDate={maxDate}
       showOutsideDays
